@@ -1,7 +1,6 @@
 @import "tailwindcss";
 
-body{
-
+.whole_chat_body{
     justify-content: center;
     align-items: center;
 }

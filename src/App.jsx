@@ -48,6 +48,7 @@ function App() {
   };
 
   return (
+    <div class="whole_chat_body">
     <div className="w-[30vw] h-screen flex flex-col bg-white">
       <div className="bg-gradient-to-r from-blue-600 to-blue-800 text-white px-6 py-4 flex items-center justify-between shadow-lg rounded-b-lg border-b-4 border-blue-400">
         <div className="flex items-center gap-3">
@@ -86,6 +87,7 @@ function App() {
         />
       </div>
     </div>
+  </div>
   );
 }
 
