@@ -1,15 +1,51 @@
-import { useState } from "react";
+import { useState,useEffect,useRef  } from "react";
 import "./App.css";
 import Robot_icon from "./components/robot_icon.jsx";
 import Chatform from "./components/Chatform.jsx";
 import ChatMessage from "./components/ChatMessage.jsx";
 
 function App() {
+  const bottomRef = useRef(null);
+
   const [count, setCount] = useState(0);
   const [ChatHistory, setChatHistory] = useState([]);
-  const generateBotResponse =(history)=>{
-    console.log(history)
-  }
+  const updateHistory = (text) => {
+    setChatHistory((prev) => [
+      ...prev.filter((msg) => msg.text != "Thinking..."),
+      { role: "model", text },
+    ]);
+  };
+  useEffect(() => {
+    bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [ChatHistory]);
+  
+  const generateBotResponse = async (history) => {
+    history = history.map(({ role, text }) => ({ role, parts: [{ text }] }));
+    const request_option = {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        contents: history,
+      }),
+    };
+
+    try {
+      const response = await fetch(
+        import.meta.env.VITE_API_URL,
+        request_option
+      );
+      const data = await response.json();
+      if (!response.ok)
+        throw new Error(data.error.message || "Something is wrong");
+      const api_text = data.candidates[0].content?.parts[0]?.text;
+      updateHistory(api_text);
+      console.log(api_text);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   return (
     <div className="w-[30vw] h-screen flex flex-col bg-white">
@@ -38,10 +74,16 @@ function App() {
         {ChatHistory.map((chat, index) => (
           <ChatMessage key={index} chat={chat} />
         ))}
+
+        <div ref={bottomRef} />
       </div>
 
       <div className="p-4 border-t border-gray-200">
-        <Chatform ChatHistory= {ChatHistory} setChatHistory={setChatHistory}  generateBotResponse={generateBotResponse} />
+        <Chatform
+          ChatHistory={ChatHistory}
+          setChatHistory={setChatHistory}
+          generateBotResponse={generateBotResponse}
+        />
       </div>
     </div>
   );
