@@ -2,22 +2,32 @@ import { useState } from "react";
 import "./App.css";
 import Robot_icon from "./components/robot_icon.jsx";
 import Chatform from "./components/Chatform.jsx";
+import ChatMessage from "./components/ChatMessage.jsx";
+
 function App() {
   const [count, setCount] = useState(0);
+  const [ChatHistory, setChatHistory] = useState([]);
+  const generateBotResponse =(history)=>{
+    console.log(history)
+  }
 
   return (
-    <div className="w-full h-screen flex flex-col bg-white">
-      {/* Header */}
-      <div className="bg-blue-600 text-white px-6 py-4 flex items-center shadow-md">
+    <div className="w-[30vw] h-screen flex flex-col bg-white">
+      <div className="bg-gradient-to-r from-blue-600 to-blue-800 text-white px-6 py-4 flex items-center justify-between shadow-lg rounded-b-lg border-b-4 border-blue-400">
         <div className="flex items-center gap-3">
-          <Robot_icon />
-          <h2 className="text-lg font-semibold">Chatbot</h2>
+          <Robot_icon className="w-8 h-8 text-blue-200" />
+          <h2 className="text-xl font-bold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-blue-100 to-white">
+            Chatbot Assistant
+          </h2>
+        </div>
+        <div className="flex space-x-2">
+          <div className="w-3 h-3 rounded-full bg-blue-400"></div>
+          <div className="w-3 h-3 rounded-full bg-blue-300"></div>
+          <div className="w-3 h-3 rounded-full bg-blue-200"></div>
         </div>
       </div>
 
-      {/* Chat Body */}
       <div className="flex-1 overflow-y-auto px-4 py-6 space-y-4 bg-gray-50">
-        {/* Bot Message */}
         <div className="flex items-start gap-3 max-w-md">
           <Robot_icon />
           <p className="bg-blue-100 text-gray-800 px-4 py-2 rounded-xl rounded-tl-none text-sm">
@@ -25,19 +35,13 @@ function App() {
           </p>
         </div>
 
-        {/* User Message */}
-        <div className="flex justify-end">
-          <p className="bg-green-200 text-gray-800 px-4 py-2 rounded-xl rounded-tr-none max-w-md text-sm">
-            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Enim
-            quam labore necessitatibus modi illo autem temporibus rerum
-            expedita debitis incidunt?
-          </p>
-        </div>
+        {ChatHistory.map((chat, index) => (
+          <ChatMessage key={index} chat={chat} />
+        ))}
       </div>
 
-      {/* Input Area */}
       <div className="p-4 border-t border-gray-200">
-        <Chatform/>
+        <Chatform ChatHistory= {ChatHistory} setChatHistory={setChatHistory}  generateBotResponse={generateBotResponse} />
       </div>
     </div>
   );
